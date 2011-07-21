@@ -3,5 +3,13 @@ if RUBY_VERSION.split('.')[1].to_i < 9
   exit 1
 end
 
+require 'rubygems'
+require 'bundler'
+
+Bundler.require
+
 require 'yaml'
+
+require 'Flames/campfire'
+require 'Flames/room'
 require "Flames/version"
