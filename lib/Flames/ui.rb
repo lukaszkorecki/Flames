@@ -30,6 +30,16 @@ module Flames
         s << "\n"
         s << m['body']
         s
+      when 'KickMessage'
+        s "< "
+        s << "#{m['user']['name']} left the room".dark_green
+        s << " >"
+        s
+      when 'JoinMessage'
+        s "< "
+        s << "#{m['user']['name']} joined the room".dark_green
+        s << " >"
+        s
       else
         "Unknonw type! \n#{m.to_yaml}"
       end
