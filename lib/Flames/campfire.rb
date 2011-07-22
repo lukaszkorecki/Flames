@@ -11,11 +11,18 @@ module Flames
     end
 
     def rooms
-      puts @campfire.rooms.map {|r| r.name }.join "\n"
+      @campfire.rooms.map {|r| r.name }
     end
 
     def join_room name
-      Room.new @campfire.find_room_by_name name
+      begin
+        Room.new @campfire.find_room_by_name name
+      rescue => e
+        puts "error".red
+        puts e.inspect
+        exit 1
+      end
     end
+
   end
 end
