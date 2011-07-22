@@ -35,7 +35,7 @@ module Flames
         s << "#{m['user']['name']} left the room".dark_green
         s << " >"
         s
-      when 'JoinMessage'
+      when 'EnterMessage'
         s "< "
         s << "#{m['user']['name']} joined the room".dark_green
         s << " >"
