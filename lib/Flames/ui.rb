@@ -31,12 +31,12 @@ module Flames
         s << m['body']
         s
       when 'KickMessage'
-        s "< "
+        s = "< "
         s << "#{m['user']['name']} left the room".dark_green
         s << " >"
         s
       when 'EnterMessage'
-        s "< "
+        s = "< "
         s << "#{m['user']['name']} joined the room".dark_green
         s << " >"
         s
