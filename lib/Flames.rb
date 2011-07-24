@@ -15,3 +15,4 @@ require 'Flames/campfire'
 require 'Flames/room'
 require "Flames/version"
 require "Flames/ui"
+require "Flames/formatter"

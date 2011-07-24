@@ -1,30 +1,31 @@
 require './lib/Flames'
 
-Thread.abort_on_exception= true
+Thread.abort_on_exception = true unless ENV['DEBUG'].nil?
+
+ui = Flames::Ui.new
 campfire = Flames::Campfire.new
 
 rms = campfire.rooms
 
-num = Flames::Ui.menu rms
-
-
+num = ui.menu rms
 room = campfire.select_room rms[num]
 
-puts "NOW SPEAKING IN #{rms[num].red}"
 
 # set up callbacks
-prompt = lambda { |message, room| Flames::Ui.prompt message, room }
+prompt = lambda { |message, room| ui.prompt message, room }
 room.on_join = prompt
 room.after_listen = prompt
 
-room.on_listen = lambda { |message| Flames::Ui.render message }
+room.on_listen = lambda { |message| ui.render message }
 
 # join the room
-room.join
+room.join do
+  puts "Now chatting in #{rms[num].red}"
+end
 
 # get latest messages
 room.latest_messages.each do |msg|
-  Flames::Ui.render msg
+  ui.render msg
 end
 # display current messages
 room.display
