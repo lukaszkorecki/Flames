@@ -15,6 +15,7 @@ module Flames
     def join
       @room.join true
       @on_join.call "hi!", @room
+      yield if block_given?
     end
 
     def latest_messages
