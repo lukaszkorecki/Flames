@@ -14,7 +14,7 @@ module Flames
       @campfire.rooms.map {|r| r.name }
     end
 
-    def join_room name
+    def select_room name
       begin
         Room.new @campfire.find_room_by_name name
       rescue => e

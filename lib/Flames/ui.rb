@@ -9,10 +9,13 @@ module Flames
     end
 
     def self.prompt message, room
-      Thread.new { room.speak ask("+-~>") }
+      @p = Thread.new { room.speak ask("+-~> ") }
     end
+
     def self.render message
-      puts format_type message
+      Thread.new do
+        puts format_type message
+      end.join
     end
 
     def self.time
@@ -20,9 +23,9 @@ module Flames
     end
 
     def self.format_type m
-      case m['type']
+      out = case m['type']
       when 'TimestampMessage'
-        puts "< #{time.green} >"
+        "< #{time.green} >"
       when 'TextMessage'
         "<#{m['user']['name'].yellow}> #{m['body']}"
       when 'PasteMessage'
@@ -43,6 +46,8 @@ module Flames
       else
         "Unknonw type! \n#{m.to_yaml}"
       end
+
+      "\n#{out}"
     end
   end
 end
