@@ -6,15 +6,18 @@ module Flames
     def initialize room
       @room = room
       # callbacks
-      @on_join = lambda { |message, room| puts "on_join #{message}"}
-      @on_listen = lambda {|m| puts "#{m['user']['name'].green} - #{m['body']}" }
-      @after_listen = lambda { |message, room| puts "after_listen #{message}" }
+      @on_join = []
+      @on_listen = []
+      @after_listen = []
 
+      # @test_on_listen = lambda {|m| puts "#{m['user']['name'].green} - #{m['body']}" }
+      # @test_on_join = lambda { |message, room| puts "on_join #{message}"}
+      # @test_after_listen = lambda { |message, room| puts "after_listen #{message}" }
     end
 
     def join
       @room.join true
-      @on_join.call "hi!", @room
+      @on_join.each {|cb| cb.call "hi!", @room }
       yield if block_given?
     end
 
@@ -34,14 +37,14 @@ module Flames
         }
         }
       end
-      @after_listen.call '', @room
+      @after_listen.each { |cb| cb.call '', @room }
       transcript
     end
 
     def display
       @room.listen do |m|
-        @on_listen.call m
-        @after_listen.call m, @room
+        @on_listen.each {|cb| cb.call m }
+        @after_listen.each {|cb| cb.call m, @room }
       end
     end
 

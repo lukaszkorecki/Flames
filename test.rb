@@ -13,10 +13,10 @@ room = campfire.select_room rms[num]
 
 # set up callbacks
 prompt = lambda { |message, room| ui.prompt message, room }
-room.on_join = prompt
-room.after_listen = prompt
+room.on_join << prompt
+room.after_listen << prompt
 
-room.on_listen = lambda { |message| ui.render message }
+room.on_listen << lambda { |message| ui.render message }
 
 # join the room
 room.join do
