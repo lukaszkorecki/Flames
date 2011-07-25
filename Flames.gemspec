@@ -20,4 +20,5 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'tinder'
   s.add_dependency 'highline'
+  s.add_dependency 'notify'
 end
