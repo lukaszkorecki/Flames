@@ -28,23 +28,36 @@ module Flames
         end
       end
 
-      transcript = @room.transcript(today).reject{|m| m[:message].nil? }.map do |message|
+      transcript = begin
+                     @room.transcript(today).reject{|m| m[:message].nil? }
+                   rescue => e
+                     puts "Error'd when loading transcript".red
+                     puts e.to_yaml unless ENV['DEBUG'].nil?
+                     []
+                   end
+      transcript.map! do |message|
         {
           'type' => 'TextMessage',
           'body' => message[:message].to_s,
           'user' => {
-          'name' => users[message[:user_id].to_s]
-        }
+            'name' => users[message[:user_id].to_s]
+          }
         }
       end
+
       @after_listen.each { |cb| cb.call '', @room }
       transcript
     end
 
     def display
-      @room.listen do |m|
-        @on_listen.each {|cb| cb.call m }
-        @after_listen.each {|cb| cb.call m, @room }
+      begin
+        @room.listen do |m|
+          @on_listen.each {|cb| cb.call m }
+          @after_listen.each {|cb| cb.call m, @room }
+        end
+      rescue => e
+        puts "Error'd when listening".red
+        puts e.to_yaml unless ENV['DEBUG'].nil?
       end
     end
 
