@@ -1,5 +1,6 @@
 require './lib/Flames'
 
+puts "DEBug MODE".red unless ENV['DEBUG'].nil?
 Thread.abort_on_exception = true unless ENV['DEBUG'].nil?
 
 ui = Flames::Ui.new

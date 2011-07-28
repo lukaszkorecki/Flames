@@ -40,6 +40,11 @@ module Flames
         s << "\n@#{m['tweet']['author_username']}\n"
         s << "http://twitter.com/#!/#{m['tweet']['author_username']}/status/#{m['tweet']['id']}".blue
 
+      when 'UploadMessage'
+        s = "< "
+        s << "#{random_color m['user']['name']} uploaded a file".yellow
+        s << " >"
+
       else
         "Unknown type! \n#{m.to_yaml}"
       end
