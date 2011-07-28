@@ -34,6 +34,12 @@ module Flames
         s << "#{random_color m['user']['name']} joined the room".dark_green
         s << " >"
 
+      when 'TweetMessage'
+        s = "<#{random_color m['user']['name']}> shares a #{'tweet'.blue}:\n"
+        s << m['tweet']['message']
+        s << "\n@#{m['tweet']['author_username']}\n"
+        s << "http://twitter.com/#!/#{m['tweet']['author_username']}/status/#{m['tweet']['id']}".blue
+
       else
         "Unknown type! \n#{m.to_yaml}"
       end
