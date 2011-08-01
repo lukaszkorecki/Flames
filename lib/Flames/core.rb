@@ -1,5 +1,5 @@
 module Flames
-  class Campfire
+  class Core
     def initialize conf_file="~/.flames"
       begin
         conf = YAML::load_file File.expand_path conf_file
@@ -7,7 +7,13 @@ module Flames
         puts "error loading #{conf_file}"
         exit 1
       end
-      @campfire = ::Tinder::Campfire.new conf['domain'], :token => conf['key']
+      begin
+        @campfire = ::Tinder::Campfire.new conf['domain'], :token => conf['key']
+      rescue => e
+        puts "Error".red
+        puts "Could not connect to Campfire for given #{conf['domain']}"
+        exit 1
+      end
     end
 
     def rooms

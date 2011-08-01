@@ -3,7 +3,7 @@ require './lib/Flames'
 Thread.abort_on_exception = true unless ENV['DEBUG'].nil?
 
 ui = Flames::Ui.new
-campfire = Flames::Campfire.new
+campfire = Flames::Core.new
 
 rms = campfire.rooms
 
