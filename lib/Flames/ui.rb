@@ -17,9 +17,7 @@ module Flames
     end
 
     def render message
-      Thread.new do
-        puts @formatter.format message
-      end.join
+      @formatter.format message
     end
 
   end
