@@ -10,6 +10,7 @@ Bundler.require
 
 require 'yaml'
 
+require 'Flames/app'
 require 'Flames/string_color'
 require 'Flames/campfire'
 require 'Flames/room'

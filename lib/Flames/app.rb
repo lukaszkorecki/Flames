@@ -5,9 +5,17 @@ require 'ncurses'
 
 module Flames
   class App
+    attr_accessor :update_proc, :post_proc, :buffer
+
     def initialize
       @buffer = []
       @output_window = @input_window = nil
+
+      @update_proc = lambda {}
+      @post_proc = lambda {}
+    end
+
+    def start
       Ncurses.initscr
       Ncurses.cbreak
       Ncurses.noecho
@@ -31,9 +39,6 @@ module Flames
       Ncurses.curs_set 1
       Ncurses.endwin
     end
-
-    private
-
 
     def create_or_resize_windows
       separator = 5
@@ -62,9 +67,9 @@ module Flames
       loop do
         Ncurses.doupdate
         @input_window.erase
-        size = 140 - msg.size
-        @input_window.addstr size < 0 ? "#{-size} characters over limit\n" : "#{size} characters remaining\n"
+
         @input_window.addstr "Say> #{msg}"
+
         @input_window.noutrefresh
 
         letter = @input_window.getch
@@ -87,11 +92,11 @@ module Flames
     end
 
     def post_message(msg)
-      return unless msg[/[[:alpha:]]{3,}/] #Avoid accidental fragments
+      return @post_proc.call msg
     end
 
     def get_messages
-      messages = [Time.now.to_s, "\n"]
+      messages = [@buffer].flatten.map { |e| "#{e}\n" }
       @messages += messages
       @messages.shift until 100 > @messages.size
     end

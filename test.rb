@@ -11,13 +11,13 @@ rms = campfire.rooms
 num = ui.menu rms
 room = campfire.select_room rms[num]
 
+app = Flames::App.new
+
+app.post_proc = lambda {|str| room.post str }
 
 # set up callbacks
-prompt = lambda { |message, room| ui.prompt message, room }
-room.on_join << prompt
-room.after_listen << prompt
 
-room.on_listen << lambda { |message| ui.render message }
+room.on_listen << lambda { |message| app.buffer << message }
 room.on_listen << lambda do |message|
   Notify.notify("Flames: #{message['user']['name']}", message['body']) unless message['body'].nil?
 end
@@ -30,12 +30,6 @@ end
 
 # get latest messages
 puts "Recent messages".green
-room.latest_messages.each do |msg|
-  ui.render msg
-end
-puts "."*80
-# display current messages
-room.display
 
-# don't exit!
-loop {}
+app.start
+Thread.new { app.buffer << room.latest_messages }.join
