@@ -1,12 +1,20 @@
 module Flames
   class Formatter
+    def initialize
+      @colors =  [:red, :green, :dark_green, :yellow, :blue, :dark_blue, :pur]
+    end
+
     def time
       [:hour, :min, :sec].map { |m| Time.now.send m }.join ':'
     end
 
     def random_color str
-      colors =  [:red, :green, :dark_green, :yellow, :blue, :dark_blue, :pur]
-      str.send colors.sample
+
+      if str.nil?
+        ""
+      else
+        str.send @colors.sample
+      end
     end
 
     def format m
