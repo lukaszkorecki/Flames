@@ -4,10 +4,18 @@ module Flames
       begin
         conf = YAML::load_file File.expand_path conf_file
       rescue => e
+        puts "ERROR".red
         puts "error loading #{conf_file}"
         exit 1
       end
-      @campfire = ::Tinder::Campfire.new conf['domain'], :token => conf['key']
+      begin
+        @campfire = ::Tinder::Campfire.new conf['domain'], :token => conf['key']
+        @rooms = rooms
+      rescue
+        puts "ERROR".red
+        puts "Could not connect to server"
+        exit 1
+      end
     end
 
     def rooms
@@ -18,7 +26,7 @@ module Flames
       begin
         Room.new @campfire.find_room_by_name name
       rescue => e
-        puts "error".red
+        puts "ERROR".red
         puts e.inspect
         exit 1
       end
