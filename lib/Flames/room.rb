@@ -52,6 +52,7 @@ module Flames
     def display
       begin
         @room.listen do |m|
+          m = JSON.decode m
           @on_listen.each {|cb| cb.call m }
           @after_listen.each {|cb| cb.call m, @room }
         end

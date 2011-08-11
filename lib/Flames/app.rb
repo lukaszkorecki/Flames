@@ -63,14 +63,8 @@ module Flames
 
       @output_window.erase
 
-      @buffer.each do |t|
-        puts t.class
-        str = t.is_a?(Hash) ? @formatter.format(t) : t
-        begin
-          @output_window.addstr str
-        rescue =>e
-          File.open('log', 'w') { |f| f.write [e.message, str, @buffer].to_yaml }
-        end
+      @buffer.each do |msg|
+        @output_window.addstr @formatter.format(msg.to_s).to_s
       end
 
       @output_window.noutrefresh
