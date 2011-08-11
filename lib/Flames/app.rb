@@ -11,6 +11,8 @@ module Flames
       @buffer = []
       @output_window = @input_window = nil
 
+      @formatter = Formatter.new
+
       @update_proc = lambda {}
       @post_proc = lambda {}
     end
@@ -24,7 +26,6 @@ module Flames
 
       @output_thread = Thread.new do
         loop do
-          get_messages
           update_output
           sleep 5
         end
@@ -55,8 +56,23 @@ module Flames
     end
 
     def update_output
+      messages = @buffer.flatten.map { |e| "#{e}\n" }
+      File.open('log', 'w') { |f| f.write @buffer.to_yaml }
+      @buffer += messages
+      @buffer.shift until 100 > @buffer.size
+
       @output_window.erase
-      @buffer.each { |t| @output_window.addstr t }
+
+      @buffer.each do |t|
+        puts t.class
+        str = t.is_a?(Hash) ? @formatter.format(t) : t
+        begin
+          @output_window.addstr str
+        rescue =>e
+          File.open('log', 'w') { |f| f.write [e.message, str, @buffer].to_yaml }
+        end
+      end
+
       @output_window.noutrefresh
       Ncurses.doupdate
     end
@@ -74,12 +90,10 @@ module Flames
 
         letter = @input_window.getch
         case letter
-          when ?\n, ?\r
+          when 10, ?\n, ?\r
             post_message "#{msg}"
             msg = ''
             @output_thread.wakeup
-          when ?
-            msg.chop!
           when Ncurses::KEY_RESIZE
             create_or_resize_windows
             @output_thread.wakeup
@@ -95,13 +109,5 @@ module Flames
       return @post_proc.call msg
     end
 
-    def get_messages
-      messages = [@buffer].flatten.map { |e| "#{e}\n" }
-      @messages += messages
-      @messages.shift until 100 > @messages.size
-    end
-
   end
 end
-
-Flames::App.new
